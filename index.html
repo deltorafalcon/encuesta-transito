@@ -603,15 +603,19 @@
     // Regístrate gratis en https://formspree.io y crea un formulario
     // ─────────────────────────────────────────────────────────────
     try {
-      const form = new URLSearchParams();
-      Object.keys(payload).forEach(k => form.append(k, payload[k]));
+      // ── Envío via iframe (sin CORS) ──────────────────────────
+      var iframe = document.getElementById('submit-iframe');
+      var form   = document.getElementById('hidden-form');
 
-      // Envío via fetch con URLSearchParams (compatible con no-cors + Apps Script)
-      fetch('https://script.google.com/macros/s/AKfycbxA_Wexx4qnK2aVAeBXvxtgaBksW4soLOXRtsEh9OaUn5eSrixJWNF4LC5FSrrhBcA/exec', {
-        method: 'POST',
-        mode: 'no-cors',
-        body: form
-      }).catch(() => {});
+      // Populate hidden inputs
+      var fields = ['fecha','nombre','cedula','correo','cargo',
+                    'gusto_contenido','estrellas','nivel_conformidad','capacitacion'];
+      fields.forEach(function(k) {
+        var inp = form.querySelector('[name="'+k+'"]');
+        if (inp) inp.value = payload[k] !== undefined ? payload[k] : '';
+      });
+
+      form.submit();
       // Si no hay Formspree aún, igual mostramos éxito localmente
     } catch(e) { /* sin backend, continúa */ }
 
@@ -629,6 +633,21 @@
     document.getElementById('progress').style.width = '100%';
   }
 </script>
+
+
+<!-- ═══ HIDDEN FORM FOR SHEETS SUBMISSION (no-CORS) ═══ -->
+<iframe id="submit-iframe" name="submit-iframe" style="display:none;"></iframe>
+<form id="hidden-form" method="POST" action="https://script.google.com/macros/s/AKfycbxA_Wexx4qnK2aVAeBXvxtgaBksW4soLOXRtsEh9OaUn5eSrixJWNF4LC5FSrrhBcA/exec" target="submit-iframe" style="display:none;">
+  <input type="hidden" name="fecha">
+  <input type="hidden" name="nombre">
+  <input type="hidden" name="cedula">
+  <input type="hidden" name="correo">
+  <input type="hidden" name="cargo">
+  <input type="hidden" name="gusto_contenido">
+  <input type="hidden" name="estrellas">
+  <input type="hidden" name="nivel_conformidad">
+  <input type="hidden" name="capacitacion">
+</form>
 
 <!-- ═══ MASCOTA FLOTANTE ═══ -->
 <div id="mascota" style="
