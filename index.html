@@ -564,7 +564,7 @@
 
   function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
-  async function enviarEncuesta() {
+  function enviarEncuesta() {
     let ok = true;
     [
       { id:'nombre', fid:'f-nombre', check: v => v.trim().length > 2 },
@@ -603,12 +603,15 @@
     // Regístrate gratis en https://formspree.io y crea un formulario
     // ─────────────────────────────────────────────────────────────
     try {
-      const res = await fetch('https://script.google.com/macros/s/AKfycbxA_Wexx4qnK2aVAeBXvxtgaBksW4soLOXRtsEh9OaUn5eSrixJWNF4LC5FSrrhBcA/exec', {
+      const form = new URLSearchParams();
+      Object.keys(payload).forEach(k => form.append(k, payload[k]));
+
+      // Envío via fetch con URLSearchParams (compatible con no-cors + Apps Script)
+      fetch('https://script.google.com/macros/s/AKfycbxA_Wexx4qnK2aVAeBXvxtgaBksW4soLOXRtsEh9OaUn5eSrixJWNF4LC5FSrrhBcA/exec', {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+        body: form
+      }).catch(() => {});
       // Si no hay Formspree aún, igual mostramos éxito localmente
     } catch(e) { /* sin backend, continúa */ }
 
