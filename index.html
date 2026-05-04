@@ -603,9 +603,10 @@
     // Regístrate gratis en https://formspree.io y crea un formulario
     // ─────────────────────────────────────────────────────────────
     try {
-      const res = await fetch('https://formspree.io/f/mdaylzar', {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbxA_Wexx4qnK2aVAeBXvxtgaBksW4soLOXRtsEh9OaUn5eSrixJWNF4LC5FSrrhBcA/exec', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       // Si no hay Formspree aún, igual mostramos éxito localmente
